@@ -1,17 +1,26 @@
 import express from 'express';
+import {
+	loginAdmin,
+	registerAdmin,
+	updateAdmin,
+} from '../controllers/admin.js';
+import { checkSchema } from 'express-validator';
+import {
+	loginAdminValidator,
+	registerAdminValidator,
+	updateAdminValidator,
+} from '../middlewares/admin.js';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-	res.status(200).json({ message: 'get the admin account' });
-});
+router.post(
+	'/register',
+	checkSchema(registerAdminValidator),
+	registerAdmin
+);
 
-router.post('/register', (req, res) => {
-	res.status(201).json({ message: 'registering an admin' });
-});
+router.post('/login', checkSchema(loginAdminValidator), loginAdmin);
 
-router.post('/login', (req, res) => {
-	res.status(200).json({ message: 'logging in admin' });
-});
+router.put('/update', checkSchema(updateAdminValidator), updateAdmin);
 
 export default router;

@@ -2,7 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import createDBConnection from './utils/db.js';
-
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import routes from './routes/index.js';
 dotenv.config();
 
 const app = express();
@@ -18,6 +20,8 @@ app.use(
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 	})
 );
+
+app.use('/api', routes);
 
 // Connect to the Database
 

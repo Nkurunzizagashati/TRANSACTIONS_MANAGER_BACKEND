@@ -1,6 +1,9 @@
 import express from 'express';
 import { checkSchema } from 'express-validator.js';
-import { createAccount } from '../controllers/account.js';
+import {
+	createAccount,
+	updateAccount,
+} from '../controllers/account.js';
 
 const router = express.Router();
 
@@ -15,3 +18,5 @@ router.put(
 	checkSchema(updateAccountValidator),
 	updateAccount
 );
+
+export default router;

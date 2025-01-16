@@ -53,4 +53,33 @@ const createAccount = async (req, res) => {
 	}
 };
 
-export { createAccount };
+const getAccounts = async (req, res) => {
+	try {
+		const loggedInUser = getLoggedInUser();
+		if (!loggedInUser) {
+			return res.status(401).json({ message: 'Not authorized' });
+		}
+
+		const adminId = loggedInUser.userId;
+		const accounts = await Account.find({ userId: adminId });
+
+		if (accounts.length == 0) {
+			return res.status(200).json({
+				message:
+					'No account found for this user, consider creating one',
+			});
+		}
+
+		res.status(200).json({ accounts });
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
+const updateAccount = async (req, res) => {
+	try {
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
+};
+export { createAccount, updateAccount, getAccounts };

@@ -2,6 +2,7 @@ import express from 'express';
 import { checkSchema } from 'express-validator.js';
 import {
 	createAccount,
+	getAccounts,
 	updateAccount,
 } from '../controllers/account.js';
 
@@ -18,5 +19,7 @@ router.put(
 	checkSchema(updateAccountValidator),
 	updateAccount
 );
+
+router.get('/', getAccounts);
 
 export default router;

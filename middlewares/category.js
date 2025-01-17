@@ -47,3 +47,9 @@ const deleteCategoryValidator = {
 		},
 	},
 };
+
+export {
+	createCategoryValidator,
+	updateCategoryValidator,
+	deleteCategoryValidator,
+};

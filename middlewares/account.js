@@ -54,3 +54,5 @@ const deleteAccountValidator = {
 		},
 	},
 };
+
+export { createAccountValidator, updateAccountValidator };

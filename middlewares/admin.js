@@ -1,10 +1,18 @@
 const registerAdminValidator = {
-	name: {
+	fname: {
 		notEmpty: {
-			errorMessage: 'Name should not be empty',
+			errorMessage: 'First Name should not be empty',
 		},
 		isString: {
-			errorMessage: 'Name should be a string',
+			errorMessage: 'First Name should be a string',
+		},
+	},
+	lname: {
+		notEmpty: {
+			errorMessage: 'Last Name should not be empty',
+		},
+		isString: {
+			errorMessage: 'Last Name should be a string',
 		},
 	},
 	email: {
@@ -16,6 +24,21 @@ const registerAdminValidator = {
 		},
 	},
 	password: {
+		notEmpty: {
+			errorMessage: 'Password should not be empty',
+		},
+		isString: {
+			errorMessage: 'Password should be a string',
+		},
+		isLength: {
+			options: {
+				min: 6,
+				max: 10,
+			},
+			errorMessage: 'Password should have 6 to 10 characters',
+		},
+	},
+	confirmPassword: {
 		notEmpty: {
 			errorMessage: 'Password should not be empty',
 		},

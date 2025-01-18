@@ -1,4 +1,6 @@
 import bcrypt from 'bcryptjs';
+import Admin from '../models/admin.js';
+import jwt from 'jsonwebtoken';
 
 const hashPassword = async (password) => {
 	const salt = await bcrypt.genSalt(10);
@@ -15,35 +17,42 @@ const comparePasswords = async (password, hashedPassword) => {
 	return passwordsMatch;
 };
 
-const getLoggedInUser = async (req, res) => {
+const getLoggedInUser = async (req) => {
 	try {
 		const authHeader = req.headers.authorization;
-		let accessToken =
-			authHeader && authHeader.startsWith('Bearer ')
-				? authHeader.split(' ')[1]
-				: null;
+		console.log('Authorization Header:', authHeader);
 
-		if (!accessToken)
-			return res.status(401).json({ message: 'Not authorized' });
+		if (!authHeader || !authHeader.startsWith('Bearer ')) {
+			throw new Error(
+				'Not authorized: Missing or malformed token'
+			);
+		}
+
+		const accessToken = authHeader.split(' ')[1];
 
 		const decodedAccessToken = jwt.verify(
 			accessToken,
 			process.env.JWT_SECRET
 		);
 
-		if (!decodedAccessToken) {
-			return res.status(401).json({ message: 'Not authorized' });
-		}
-
-		const user = await Consumer.findOne({
+		const user = await Admin.findOne({
 			email: decodedAccessToken.email,
 		});
 
-		return { user: user, userId: user._id };
+		if (!user) {
+			throw new Error('Not authorized: User not found');
+		}
+
+		return { user, userId: user._id };
 	} catch (error) {
-		return res
-			.status(500)
-			.json({ message: 'Something went wrong' });
+		console.error('Error in getLoggedInUser:', error.message);
+
+		if (error.message.includes('Not authorized')) {
+			throw new Error('Invalid token or not authorized');
+		} else {
+			throw new Error('Something went wrong');
+		}
 	}
 };
+
 export { hashPassword, comparePasswords, getLoggedInUser };

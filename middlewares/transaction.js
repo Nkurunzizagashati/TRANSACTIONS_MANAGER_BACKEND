@@ -15,28 +15,32 @@ const createTransactionValidator = {
 			errorMessage: 'Transaction amount should be a number',
 		},
 	},
-	type: {
+	transactionType: {
 		notEmpty: {
 			errorMessage: 'Transaction type should not be empty',
 		},
 		isIn: {
-			options: [['income', 'expense']],
+			options: [['Income', 'Expense']],
 			errorMessage:
-				'Transaction type should be either income or expense',
+				'Transaction type should be either Income or Expense',
 		},
 	},
-	category: {
-		notEmpty: {
-			errorMessage: 'Transaction category should not be empty',
-		},
-		isString: {
-			errorMessage: 'Transaction category should be a string',
+	categoryId: {
+		optional: { options: { nullable: true } },
+		isMongoId: {
+			errorMessage: 'Category id should be a valid Mongo ID',
 		},
 	},
 	description: {
 		optional: { options: { nullable: true } },
 		isString: {
 			errorMessage: 'Description should be a string',
+		},
+	},
+	date: {
+		optional: { options: { nullable: true } },
+		isDate: {
+			errorMessage: 'Date should be a valid date',
 		},
 	},
 };
@@ -70,3 +74,5 @@ const updateTransactionValidator = {
 		},
 	},
 };
+
+export { createTransactionValidator, updateTransactionValidator };

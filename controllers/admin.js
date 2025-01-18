@@ -2,19 +2,21 @@ import { matchedData, validationResult } from 'express-validator';
 import mongoose from 'mongoose';
 import Admin from '../models/admin.js';
 import { comparePasswords, hashPassword } from '../utils/helpers.js';
-import { generateJWTauthToken } from '../utils/generate-jwt-token';
+import { generateJWTauthToken } from '../utils/authTokens.js';
 
 const registerAdmin = async (req, res) => {
 	try {
 		const result = validationResult(req);
 		if (!result.isEmpty()) {
-			res.status(400).json({ message: result.array()[0].msg });
+			return res
+				.status(400)
+				.json({ message: result.array()[0].msg });
 		}
 
 		const data = matchedData(req);
 
 		if (data.password != data.confirmPassword) {
-			res.status(400).json({
+			return res.status(400).json({
 				message:
 					'Password and Confirm Password should be the same.',
 			});
@@ -25,7 +27,7 @@ const registerAdmin = async (req, res) => {
 		});
 
 		if (existingAdmin) {
-			res.status(401).json({
+			return res.status(401).json({
 				message: 'Email already registered',
 			});
 		}
@@ -46,7 +48,7 @@ const registerAdmin = async (req, res) => {
 		const adminData = newAdmin.toObject();
 		delete adminData.password;
 
-		res.status(201).json({
+		return res.status(201).json({
 			message: 'Admin registered successfully',
 			token: accessToken,
 			user: adminData,

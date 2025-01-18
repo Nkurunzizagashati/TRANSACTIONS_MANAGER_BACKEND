@@ -25,4 +25,6 @@ const transactionSchema = new mongoose.Schema({
 	date: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('Transaction', transactionSchema);
+const Transaction = mongoose.model('Transaction', transactionSchema);
+
+export default Transaction;

@@ -6,10 +6,10 @@ const accountSchema = new mongoose.Schema({
 		ref: 'Admin',
 		required: true,
 	},
-	accountName: { type: String, required: true },
+	bankName: { type: String, required: true },
 	accountType: {
 		type: String,
-		enum: ['Bank', 'Mobile Money', 'Cash'],
+		enum: ['Checking', 'Saving', 'Credit', 'MoMo', 'Cash'],
 		required: true,
 	},
 	balance: { type: Number, default: 0 },

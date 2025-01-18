@@ -7,8 +7,12 @@ const createCategoryValidator = {
 			errorMessage: 'Category name should be a string',
 		},
 	},
-	parentId: {
+	parentCategoryId: {
 		optional: { options: { nullable: true } },
+		isMongoId: {
+			errorMessage:
+				'Parent category ID should be a valid MongoDB ID',
+		},
 		isString: {
 			errorMessage: 'Parent category ID should be a string',
 		},
@@ -20,6 +24,9 @@ const updateCategoryValidator = {
 		in: ['params'],
 		notEmpty: {
 			errorMessage: 'Category ID should not be empty',
+		},
+		isMongoId: {
+			errorMessage: 'Category ID should be a valid MongoDB ID',
 		},
 		isString: {
 			errorMessage: 'Category ID should be a string',
@@ -41,6 +48,9 @@ const deleteCategoryValidator = {
 		in: ['params'],
 		notEmpty: {
 			errorMessage: 'Category ID should not be empty',
+		},
+		isMongoId: {
+			errorMessage: 'Category ID should be a valid MongoDB ID',
 		},
 		isString: {
 			errorMessage: 'Category ID should be a string',

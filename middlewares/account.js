@@ -1,19 +1,19 @@
 const createAccountValidator = {
-	name: {
+	bankName: {
 		notEmpty: {
-			errorMessage: 'Account name should not be empty',
+			errorMessage: 'Bank name should not be empty',
 		},
 		isString: {
-			errorMessage: 'Account name should be a string',
+			errorMessage: 'Bank name should be a string',
 		},
 	},
-	type: {
+	accountType: {
 		notEmpty: {
 			errorMessage: 'Account type should not be empty',
 		},
 		isString: {
 			errorMessage:
-				'Account type should be a string (e.g., bank, cash, mobile money)',
+				'Account type should be a string (e.g., Savings, Creadit, Checking, MoMO, Cash)',
 		},
 	},
 	balance: {
@@ -25,13 +25,30 @@ const createAccountValidator = {
 };
 
 const updateAccountValidator = {
-	name: {
+	bankName: {
 		optional: { options: { nullable: true } },
 		notEmpty: {
-			errorMessage: 'Account name should not be empty',
+			errorMessage: 'bank name should not be empty',
 		},
 		isString: {
-			errorMessage: 'Account name should be a string',
+			errorMessage: 'bank name should be a string',
+		},
+	},
+	accountType: {
+		notEmpty: {
+			errorMessage: 'Account type should not be empty',
+		},
+		isString: {
+			errorMessage:
+				'Account type should be a string (e.g., Savings, Creadit, Checking, MoMO, Cash)',
+		},
+	},
+	accountId: {
+		notEmpty: {
+			errorMessage: 'Account ID should not be empty',
+		},
+		isMongoId: {
+			errorMessage: 'Account ID should be a valid MongoDB ID',
 		},
 	},
 	balance: {
@@ -44,15 +61,17 @@ const updateAccountValidator = {
 
 const deleteAccountValidator = {
 	accountId: {
-		in: ['params'],
 		notEmpty: {
-			errorMessage:
-				'You need to provide an ID for the account you want to delete',
+			errorMessage: 'Account ID should not be empty',
 		},
-		isString: {
-			errorMessage: 'Account ID should be a string',
+		isMongoId: {
+			errorMessage: 'Account ID should be a valid MongoDB ID',
 		},
 	},
 };
 
-export { createAccountValidator, updateAccountValidator };
+export {
+	createAccountValidator,
+	updateAccountValidator,
+	deleteAccountValidator,
+};

@@ -15,7 +15,6 @@ const createCategory = async (req, res) => {
 		}
 
 		const data = matchedData(req);
-		console.log(data);
 
 		if (data.parentCategoryId) {
 			const parentCategory = await Category.findById(
@@ -48,8 +47,8 @@ const createCategory = async (req, res) => {
 		return res.status(201).json({
 			message: 'Category created successfully',
 			category: await newCategory.populate([
-				'userId',
-				'parentCategoryId',
+				{ path: 'userId', select: '-password' },
+				{ path: 'parentCategoryId' },
 			]),
 		});
 	} catch (error) {
@@ -63,15 +62,18 @@ const createCategory = async (req, res) => {
 const getCategories = async (req, res) => {
 	try {
 		const loggedInUser = await getLoggedInUser(req, res);
-		console.log(loggedInUser);
-
-		console.log(loggedInUser.userId);
 		const categories = await Category.find({
 			userId: loggedInUser.userId,
-		}).populate(['userId', 'parentCategoryId']);
+		}).populate([
+			{ path: 'userId', select: '-password' },
+			{ path: 'parentCategoryId' },
+		]);
 		return res.status(200).json({ categories });
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		const statusCode = error.message.includes('not authorized')
+			? 401
+			: 500;
+		return res.status(statusCode).json({ message: error.message });
 	}
 };
 

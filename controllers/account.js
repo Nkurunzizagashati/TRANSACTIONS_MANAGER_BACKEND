@@ -1,6 +1,7 @@
 import { matchedData, validationResult } from 'express-validator';
-import Admin from '../models/admin';
-import Account from '../models/account';
+import Admin from '../models/admin.js';
+import Account from '../models/account.js';
+import { getLoggedInUser } from '../utils/helpers.js';
 
 const createAccount = async (req, res) => {
 	try {
@@ -13,73 +14,74 @@ const createAccount = async (req, res) => {
 
 		const data = matchedData(req);
 
-		const authHeader = req.headers.authorization;
-		let accessToken =
-			authHeader && authHeader.startsWith('Bearer ')
-				? authHeader.split(' ')[1]
-				: null;
+		const loggedInUser = await getLoggedInUser(req);
 
-		if (!accessToken)
-			return res.status(401).json({ message: 'Not authorized' });
-
-		const decodedAccessToken = jwt.verify(
-			accessToken,
-			process.env.JWT_SECRET
-		);
-
-		if (!decodedAccessToken) {
-			return res.status(401).json({ message: 'Not authorized' });
-		}
-
-		const user = await Admin.findOne({
-			email: decodedAccessToken.email,
+		const accountAlreadyExists = await Account.findOne({
+			userId: loggedInUser.userId,
+			bankName: data.bankName,
+			accountType: data.accountType,
 		});
 
-		if (!user) {
-			return res.status(401).json({ message: 'Not authorized' });
+		if (accountAlreadyExists) {
+			return res
+				.status(400)
+				.json({ message: 'Account already exists' });
 		}
 
 		const createdAccount = await Account.create({
 			...data,
-			userId: user._id,
+			userId: loggedInUser.userId,
 		});
 
 		res.status(201).json({
 			message: 'Account created successfully',
-			account: createdAccount,
+			account: createdAccount.populate('userId'),
 		});
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		const statusCode = error.message.includes('not authorized')
+			? 401
+			: 500;
+
+		const errorMessage = error.message.includes('not authorized')
+			? error.message
+			: 'Something went wrong';
+		return res.status(statusCode).json({ message: errorMessage });
 	}
 };
 
 const getAccounts = async (req, res) => {
 	try {
-		const loggedInUser = getLoggedInUser();
-		if (!loggedInUser) {
-			return res.status(401).json({ message: 'Not authorized' });
-		}
+		const loggedInUser = await getLoggedInUser(req);
 
 		const adminId = loggedInUser.userId;
-		const accounts = await Account.find({ userId: adminId });
+		const accounts = await Account.find({
+			userId: adminId,
+		}).populate({ path: 'userId', select: '-password' });
 
-		if (accounts.length == 0) {
-			return res.status(200).json({
-				message:
-					'No account found for this user, consider creating one',
-			});
-		}
-
-		res.status(200).json({ accounts });
+		return res.status(200).json({ accounts });
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		const statusCode = error.message.includes('not authorized')
+			? 401
+			: 500;
+
+		const errorMessage = error.message.includes('not authorized')
+			? error.message
+			: 'Something went wrong';
+		return res.status(statusCode).json({ message: errorMessage });
 	}
 };
 
 const updateAccount = async (req, res) => {
 	try {
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		const statusCode = error.message.includes('not authorized')
+			? 401
+			: 500;
+
+		const errorMessage = error.message.includes('not authorized')
+			? error.message
+			: 'Something went wrong';
+		return res.status(statusCode).json({ message: errorMessage });
 	}
 };
 export { createAccount, updateAccount, getAccounts };

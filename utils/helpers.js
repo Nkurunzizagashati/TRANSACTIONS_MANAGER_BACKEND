@@ -20,7 +20,6 @@ const comparePasswords = async (password, hashedPassword) => {
 const getLoggedInUser = async (req) => {
 	try {
 		const authHeader = req.headers.authorization;
-		console.log('Authorization Header:', authHeader);
 
 		if (!authHeader || !authHeader.startsWith('Bearer ')) {
 			throw new Error(

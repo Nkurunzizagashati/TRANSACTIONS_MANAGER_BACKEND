@@ -62,7 +62,9 @@ const loginAdmin = async (req, res) => {
 	try {
 		const result = validationResult(req);
 		if (!result.isEmpty()) {
-			res.status(400).json({ message: result.array()[0].msg });
+			return res
+				.status(400)
+				.json({ message: result.array()[0].msg });
 		}
 
 		const data = matchedData(req);
@@ -77,10 +79,12 @@ const loginAdmin = async (req, res) => {
 
 		const password = data.password;
 
-		const passwordMatches = comparePasswords(
+		const passwordMatches = await comparePasswords(
 			password,
 			existingAdmin.password
 		);
+
+		console.log(passwordMatches);
 
 		if (!passwordMatches) {
 			return res
@@ -95,7 +99,7 @@ const loginAdmin = async (req, res) => {
 		const adminData = existingAdmin.toObject();
 		delete adminData.password;
 
-		res.status(200).json({
+		return res.status(200).json({
 			message: 'Logged in successfully!',
 			user: adminData,
 			accessToken,

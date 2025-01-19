@@ -23,6 +23,10 @@ app.use(
 
 app.use('/api', routes);
 
+app.get('/api', async (req, res) => {
+	res.send('HELLO FROM WEBWALLET BACKEND');
+});
+
 // Connect to the Database
 
 createDBConnection();

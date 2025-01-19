@@ -3,6 +3,7 @@ import { checkSchema } from 'express-validator';
 import { createCategoryValidator } from '../middlewares/category.js';
 import {
 	createCategory,
+	deleteCategory,
 	getCategories,
 } from '../controllers/category.js';
 
@@ -15,5 +16,7 @@ router.post(
 	checkSchema(createCategoryValidator),
 	createCategory
 );
+
+router.delete('/category/:categoryId', deleteCategory);
 
 export default router;

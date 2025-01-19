@@ -17,6 +17,6 @@ router.post(
 	createCategory
 );
 
-router.delete('/category/:categoryId', deleteCategory);
+router.delete('/:categoryId', deleteCategory);
 
 export default router;

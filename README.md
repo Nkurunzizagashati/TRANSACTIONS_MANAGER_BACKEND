@@ -36,11 +36,16 @@ git clone <repository-url>
 npm install
 ```
 
-## To Run this app locally, you will need these environment variables:
+### Environment Variables
 
-DB_URI=<your MongoDB connection string>
+To run this project, you need to set up the following environment variables in a `.env` file:
+
+```plaintext
+DB_URI=<Your MongoDB connection string>
 JWT_SECRET=<Your JWT secret>
-JWT_REFRESH_SECRET=<YOUR JWT refresh secret>
-NODE_ENVIRONMENT=<SET environment >
-SESSION_SECRET=<YOUR SESSION secret>
-PORT=<YOUR PORT>
+JWT_REFRESH_SECRET=<Your JWT refresh secret>
+NODE_ENVIRONMENT=<Set the environment (e.g., development or production)>
+SESSION_SECRET=<Your session secret>
+PORT=<Your desired port number>
+
+```

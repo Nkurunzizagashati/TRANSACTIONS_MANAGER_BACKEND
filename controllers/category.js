@@ -77,4 +77,51 @@ const getCategories = async (req, res) => {
 	}
 };
 
-export { createCategory, getCategories };
+import mongoose from 'mongoose';
+
+const deleteCategory = async (req, res) => {
+	const session = await mongoose.startSession();
+	session.startTransaction();
+
+	try {
+		const loggedInUser = await getLoggedInUser(req);
+		const adminId = loggedInUser.userId;
+
+		const { categoryId } = req.params;
+
+		const category = await Category.findOne({
+			_id: categoryId,
+			userId: adminId,
+		});
+
+		if (!category) {
+			return res
+				.status(404)
+				.json({ message: 'Category not found' });
+		}
+
+		await Category.deleteOne({ _id: categoryId }, { session });
+		await Category.deleteMany(
+			{ parentCategoryId: categoryId },
+			{ session }
+		);
+
+		await session.commitTransaction();
+		session.endSession();
+
+		return res.status(200).json({
+			message:
+				'Category and its child categories deleted successfully',
+		});
+	} catch (error) {
+		await session.abortTransaction();
+		session.endSession();
+
+		const statusCode = error.message.includes('not authorized')
+			? 401
+			: 500;
+		return res.status(statusCode).json({ message: error.message });
+	}
+};
+
+export { createCategory, getCategories, deleteCategory };

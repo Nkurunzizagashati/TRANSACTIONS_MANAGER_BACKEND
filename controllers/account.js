@@ -33,9 +33,14 @@ const createAccount = async (req, res) => {
 			userId: loggedInUser.userId,
 		});
 
+		const populatedAccount = await createdAccount.populate({
+			path: 'userId',
+			select: '-password',
+		});
+
 		res.status(201).json({
 			message: 'Account created successfully',
-			account: createdAccount.populate('userId'),
+			account: populatedAccount,
 		});
 	} catch (error) {
 		const statusCode = error.message.includes('not authorized')

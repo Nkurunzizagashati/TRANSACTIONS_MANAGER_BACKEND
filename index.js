@@ -31,7 +31,7 @@ app.get('/api', async (req, res) => {
 
 createDBConnection();
 
-const PORT = process.env.PORTT || 3002;
+const PORT = process.env.PORT || 3002;
 
 try {
 	app.listen(PORT, () => {
